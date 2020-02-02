@@ -5,7 +5,7 @@
 #include <linux/input.h>
 #include <string.h>
 #include <stdio.h>
-#include "input-event-codes.h"
+#include "/usr/include/linux/input-event-codes.h"
 
 /*
  ev.time: time of the event (struct timeval type)
@@ -44,6 +44,7 @@ int main(void)
             errno = EIO;
             break;
         }
+
         if (ev.type == EV_KEY && ev.value >= 0 && ev.value <= 2)
             printf("%s 0x%04x (%d)\n", evval[ev.value], (int)ev.code, (int)ev.code);
 
