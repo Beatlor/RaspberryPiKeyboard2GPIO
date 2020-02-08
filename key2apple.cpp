@@ -191,7 +191,7 @@ static const char *const evval[3] = {
     "REPEATED"
 };
 
-bool SHIFTL,SHIFTR,CTRLL,ALTL,ALTGR,CAPSLOCK,F12;
+bool SHIFTL,SHIFTR,CTRLL,ALTL,ALTGR,CAPSLOCK,F11,F12;
 int key_code;
 
 bool Debug = true;
@@ -246,9 +246,14 @@ int main(void)
               case 56:  { ALTL=true;      digitalWrite (3, HIGH); } break;
               case 100: { ALTGR=true;     digitalWrite (4, HIGH); } break;
               case 58:  { CAPSLOCK=true;  digitalWrite (5, HIGH); } break;
-              case 88:  {  F12=true;      digitalWrite (6, HIGH); } break;
+              case 87:  {  F11=true;      digitalWrite (6, HIGH); } break;
+              case 88:  {  F12=true; 
+			   if ( F11 ) {digitalWrite (6, HIGH); }
+			  } 
+			  break;
+
               default: { if (Debug)  printf("   %s 0x%04x (%d) - KC %d", evval[ev.value], (int)ev.code, (int)ev.code,key_map[key_code]);
-                         if (Debug) printf (" - %d %d %d %d %d %d %d -- ",SHIFTL,SHIFTR,CTRLL,ALTL,ALTGR,CAPSLOCK,F12);
+                         if (Debug) printf (" -SL %d SR %d CL %d AL %d LR %d CA %d F11 %d F12 %d-- ",SHIFTL,SHIFTR,CTRLL,ALTL,ALTGR,CAPSLOCK,F11,F12);
                          digitalWrite (7, key_map[key_code] & 0x1);     if (Debug) printf ("-BIT0  %d |",key_map[key_code] & 0x1);
                          digitalWrite (8, key_map[key_code]>>1 & 0x1);  if (Debug) printf ("-BIT1  %d |",key_map[key_code]>>1 & 0x1);
                          digitalWrite (9, key_map[key_code]>>2 & 0x1);  if (Debug) printf ("-BIT2  %d |",key_map[key_code]>>2 & 0x1);
@@ -269,8 +274,10 @@ int main(void)
               case 56: { ALTL=false;     digitalWrite (3, LOW); } break;
               case 100:{ ALTGR=false;    digitalWrite (4, LOW); } break;
               case 58: { CAPSLOCK=false; digitalWrite (5, LOW); } break;
+              case 87: { F11=false;      digitalWrite (6, LOW); } break;
               case 88: { F12=false;      digitalWrite (6, LOW); } break;
-            }
+            
+	    }
           }    
         }
     }
