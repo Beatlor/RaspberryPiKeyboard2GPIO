@@ -200,21 +200,22 @@ int main(void)
 {
     wiringPiSetup ();
 
-    pinMode (0, OUTPUT); digitalWrite (0, LOW);
-    pinMode (1, OUTPUT); digitalWrite (1, LOW);
-    pinMode (2, OUTPUT); digitalWrite (2, LOW);
-    pinMode (3, OUTPUT); digitalWrite (3, LOW);
-    pinMode (4, OUTPUT); digitalWrite (4, LOW);
-    pinMode (5, OUTPUT); digitalWrite (5, LOW);
-    pinMode (6, OUTPUT); digitalWrite (6, LOW);
-    pinMode (7, OUTPUT); digitalWrite (7, LOW);
-    pinMode (8, OUTPUT); digitalWrite (8, LOW);
-    pinMode (9, OUTPUT); digitalWrite (9, LOW);
-    pinMode (10, OUTPUT); digitalWrite (10, LOW);
-    pinMode (11, OUTPUT); digitalWrite (11, LOW);
-    pinMode (12, OUTPUT); digitalWrite (12, LOW);
-    pinMode (13, OUTPUT); digitalWrite (13, LOW);
-    
+    pinMode (0, OUTPUT); digitalWrite (0, LOW);     // SHIFT-L
+    pinMode (1, OUTPUT); digitalWrite (1, LOW);     // SHIFT-R
+    pinMode (2, OUTPUT); digitalWrite (2, LOW);     // CTRL-L
+    pinMode (3, OUTPUT); digitalWrite (3, LOW);     // ALT-L OpenApple
+    pinMode (4, OUTPUT); digitalWrite (4, LOW);     // ALT-R ClosedApple
+    pinMode (5, OUTPUT); digitalWrite (5, LOW);     // CAPSLOCK
+    pinMode (6, OUTPUT); digitalWrite (6, LOW);     // F12 + F11 RESET
+    pinMode (7, OUTPUT); digitalWrite (7, LOW);     // BIT 0
+    pinMode (8, OUTPUT); digitalWrite (8, LOW);     // BIT 1
+    pinMode (9, OUTPUT); digitalWrite (9, LOW);     // BIT 2
+    pinMode (10, OUTPUT); digitalWrite (10, LOW);   // BIT 3
+    pinMode (11, OUTPUT); digitalWrite (11, LOW);   // BIT 4
+    pinMode (12, OUTPUT); digitalWrite (12, LOW);   // BIT 5
+    pinMode (13, OUTPUT); digitalWrite (13, LOW);   // BIT 6
+    pinMode (14, OUTPUT); digitalWrite (13, HIGH);  // Enable
+ 
     const char *dev = "/dev/input/event0";
     struct input_event ev;
     ssize_t n;
@@ -246,14 +247,15 @@ int main(void)
               case 56:  { ALTL=true;      digitalWrite (3, HIGH); } break;
               case 100: { ALTGR=true;     digitalWrite (4, HIGH); } break;
               case 58:  { CAPSLOCK=true;  digitalWrite (5, HIGH); } break;
-              case 87:  {  F11=true;      digitalWrite (6, HIGH); } break;
-              case 88:  {  F12=true; 
-			   if ( F11 ) {digitalWrite (6, HIGH); }
+              case 87:  {  F12=true;      } break;
+              case 88:  {  F11=true; 
+			   if ( F12 ) {digitalWrite (6, HIGH); }
 			  } 
 			  break;
 
               default: { if (Debug)  printf("   %s 0x%04x (%d) - KC %d", evval[ev.value], (int)ev.code, (int)ev.code,key_map[key_code]);
-                         if (Debug) printf (" -SL %d SR %d CL %d AL %d LR %d CA %d F11 %d F12 %d-- ",SHIFTL,SHIFTR,CTRLL,ALTL,ALTGR,CAPSLOCK,F11,F12);
+                         if (Debug) printf (" -SL %d SR %d CL %d AL %d LR %d CA %d F11 %d F12 %d-- ",
+					       SHIFTL,SHIFTR,CTRLL,ALTL,ALTGR,CAPSLOCK,F11,F12);
                          digitalWrite (7, key_map[key_code] & 0x1);     if (Debug) printf ("-BIT0  %d |",key_map[key_code] & 0x1);
                          digitalWrite (8, key_map[key_code]>>1 & 0x1);  if (Debug) printf ("-BIT1  %d |",key_map[key_code]>>1 & 0x1);
                          digitalWrite (9, key_map[key_code]>>2 & 0x1);  if (Debug) printf ("-BIT2  %d |",key_map[key_code]>>2 & 0x1);
@@ -261,7 +263,7 @@ int main(void)
                          digitalWrite (11, key_map[key_code]>>4 & 0x1); if (Debug) printf ("-BIT4  %d |",key_map[key_code]>>4 & 0x1);
                          digitalWrite (12, key_map[key_code]>>5 & 0x1); if (Debug) printf ("-BIT5  %d |",key_map[key_code]>>5 & 0x1);
                          digitalWrite (13, key_map[key_code]>>6 & 0x1); if (Debug) printf ("-BIT6  %d \n",key_map[key_code]>>6 & 0x1);
-
+			 digitalWrite (14, LOW); delay (100); digitalWrite (14, HIGH);
                          }
  	   }
 	 }
