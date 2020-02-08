@@ -194,6 +194,8 @@ static const char *const evval[3] = {
 bool SHIFTL,SHIFTR,CTRLL,ALTL,ALTGR,CAPSLOCK,F12;
 int key_code;
 
+bool Debug = true;
+
 int main(void)
 {
     wiringPiSetup ();
@@ -245,21 +247,20 @@ int main(void)
               case 100: { ALTGR=true;     digitalWrite (4, HIGH); } break;
               case 58:  { CAPSLOCK=true;  digitalWrite (5, HIGH); } break;
               case 88:  {  F12=true;      digitalWrite (6, HIGH); } break;
-              default: { printf("   %s 0x%04x (%d)", evval[ev.value], (int)ev.code, (int)ev.code);
-                         printf (" - %d %d %d %d %d %d %d\n",SHIFTL,SHIFTR,CTRLL,ALTL,ALTGR,CAPSLOCK,F12);
-                         digitalWrite (7, key_map[key_code] & 0x1);     printf ("-BIT0  %d",key_map[key_code] & 0x1);
-                         digitalWrite (8, key_map[key_code]>>1 & 0x1);  printf ("-BIT1  %d",key_map[key_code]>>1 & 0x1);
-                         digitalWrite (9, key_map[key_code]>>2 & 0x1);  printf ("-BIT2  %d",key_map[key_code]>>2 & 0x1);
-                         digitalWrite (10, key_map[key_code]>>3 & 0x1); printf ("-BIT3  %d",key_map[key_code]>>3 & 0x1);
-                         digitalWrite (11, key_map[key_code]>>4 & 0x1); printf ("-BIT4  %d",key_map[key_code]>>4 & 0x1);
-                         digitalWrite (12, key_map[key_code]>>5 & 0x1); printf ("-BIT5  %d",key_map[key_code]>>5 & 0x1);
-                         digitalWrite (13, key_map[key_code]>>6 & 0x1); printf ("-BIT6  %d",key_map[key_code]>>6 & 0x1);
+              default: { if (Debug)  printf("   %s 0x%04x (%d) - KC %d", evval[ev.value], (int)ev.code, (int)ev.code,key_map[key_code]);
+                         if (Debug) printf (" - %d %d %d %d %d %d %d -- ",SHIFTL,SHIFTR,CTRLL,ALTL,ALTGR,CAPSLOCK,F12);
+                         digitalWrite (7, key_map[key_code] & 0x1);     if (Debug) printf ("-BIT0  %d |",key_map[key_code] & 0x1);
+                         digitalWrite (8, key_map[key_code]>>1 & 0x1);  if (Debug) printf ("-BIT1  %d |",key_map[key_code]>>1 & 0x1);
+                         digitalWrite (9, key_map[key_code]>>2 & 0x1);  if (Debug) printf ("-BIT2  %d |",key_map[key_code]>>2 & 0x1);
+                         digitalWrite (10, key_map[key_code]>>3 & 0x1); if (Debug) printf ("-BIT3  %d |",key_map[key_code]>>3 & 0x1);
+                         digitalWrite (11, key_map[key_code]>>4 & 0x1); if (Debug) printf ("-BIT4  %d |",key_map[key_code]>>4 & 0x1);
+                         digitalWrite (12, key_map[key_code]>>5 & 0x1); if (Debug) printf ("-BIT5  %d |",key_map[key_code]>>5 & 0x1);
+                         digitalWrite (13, key_map[key_code]>>6 & 0x1); if (Debug) printf ("-BIT6  %d \n",key_map[key_code]>>6 & 0x1);
 
                          }
  	   }
 	 }
 
-         //printf ("0 %d %d %d %d %d %d %d\n",SHIFTL,SHIFTR,CTRLL,ALTL,ALTGR,CAPSLOCK,F12);
 	 if (ev.value == 0) {
             switch (key_code) {
 	      case 42: { SHIFTL=false;   digitalWrite (0, LOW); } break;
@@ -272,8 +273,6 @@ int main(void)
             }
           }    
         }
-     printf ("-BIT0  %d\n",key_map[key_code] & 0x1);
-
     }
     fflush(stdout);
     fprintf(stderr, "%s.\n", strerror(errno));
